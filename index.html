@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Synth Drum Rhythm Box</title>
+<style>
+body { font-family: sans-serif; background:#111; color:#eee; }
+.step { width:30px; height:30px; margin:2px; display:inline-block;
+        background:#333; cursor:pointer; }
+.step.on { background:#e33; }
+.row { margin:10px 0; }
+</style>
+</head>
+<body>
+
+<h2>Synth Drum Rhythm Box</h2>
+
+<select id="patternSel">
+  <option value="none">リズムを選択</option>
+  <option value="ska">スカリズム</option>
+  <option value="jazz">ジャズスイング</option>
+</select>
+<button id="setBtn">セット</button>
+
+<div class="row" id="kickRow"></div>
+<div class="row" id="snareRow"></div>
+<div class="row" id="hatRow"></div>
+
+<button id="playBtn">PLAY</button>
+
+<script>
+const audio = new (window.AudioContext || window.webkitAudioContext)();
+const steps = 16;
+
+// UI生成
+function makeRow(id){
+  const row = document.getElementById(id);
+  for(let i=0;i<steps;i++){
+    const div=document.createElement("div");
+    div.className="step";
+    div.dataset.step=i;
+    div.onclick=()=>div.classList.toggle("on");
+    row.appendChild(div);
+  }
+}
+makeRow("kickRow");
+makeRow("snareRow");
+makeRow("hatRow");
+
+// 全ステップOFF
+function clearAll(){
+  ["kickRow","snareRow","hatRow"].forEach(id=>{
+    [...document.getElementById(id).children].forEach(s=>s.classList.remove("on"));
+  });
+}
+
+// リズムセット
+document.getElementById("setBtn").onclick=()=>{
+  clearAll();
+  const pat=document.getElementById("patternSel").value;
+
+  const kick=[...document.getElementById("kickRow").
